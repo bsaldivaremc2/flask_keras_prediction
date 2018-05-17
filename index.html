@@ -1,0 +1,64 @@
+
+<!-- saved from url=(0088)file:///home/bsaldivar/MEGA/Documents/Software/Python_Projects/LID/Web/send_picture.html -->
+<html>
+	<head>
+		<script
+			  src="https://code.jquery.com/jquery-3.2.1.js"
+			  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+			  crossorigin="anonymous">
+		</script>
+		<script src='functions.js'></script>
+		<link href="styles.css" rel="stylesheet" type="text/css"/>
+		<style type="text/css">
+		</style>
+	</head>
+	<body>
+		<div>
+			<div>
+				<label>Upload Image File:</label> 
+				<input type="file" id="imageLoader" name="imageLoader"><br>
+			</div>
+			<div id="send_img_btn" class="btn">
+				Send image for processing
+			</div>
+			<div id="send_test_btn" class="btn">
+				Send test data to server
+			</div>
+			<div id="message"></div>
+			<div>
+				<canvas id="imageCanvas" width="256" height="256"></canvas>
+			</div>
+			<div id="inference"></div>
+
+		</div>
+	
+			<script type="text/javascript">
+			var imageLoader = document.getElementById('imageLoader');
+		    	imageLoader.addEventListener('change', handleImage, false);
+			var canvas = document.getElementById('imageCanvas');
+			var ctx = canvas.getContext('2d');
+			function handleImage(e){
+		    	var reader = new FileReader();
+				reader.onload = function(event){
+		        	var img = new Image();
+		        	img.onload = function(){
+		            	canvas.width = image_resize_w;
+		            	canvas.height = image_resize_h;
+		            	ctx.drawImage(img,0,0,img.width,img.height,0,0,canvas.width,canvas.height);
+		    			var imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
+		    			var image_data = imgData.data;
+		    			var histogram = rgb_bright_hist(image_data,bins=hist_bins,min=0,max=255)
+		    			image_dic['image']=histogram;
+						if (verbosity==true)
+						{
+							console.log(histogram);
+						}
+		        	}
+		        	img.src = event.target.result;
+		        	
+		    	}
+		    	reader.readAsDataURL(e.target.files[0]);
+		}
+
+		</script>
+</body></html>
